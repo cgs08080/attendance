@@ -85,12 +85,6 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2">
-                <button onclick="openModal('guide-modal')" class="p-2 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all" title="연동 가이드">
-                    <i class="fa-solid fa-circle-question text-lg"></i>
-                </button>
-                <button onclick="openModal('settings-modal')" class="p-2 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all" title="선생님 설정">
-                    <i class="fa-solid fa-gear text-lg"></i>
-                </button>
             </div>
         </div>
     </header>
@@ -102,9 +96,8 @@
         <div id="webhook-status-banner" class="mb-4 p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl text-xs flex items-center justify-between shadow-sm">
             <div class="flex items-center space-x-2">
                 <i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm"></i>
-                <span>구글 시트 연동 URL이 아직 설정되지 않았습니다. (로컬에만 저장됨)</span>
+                <span>출석 제출을 사용할 수 없습니다. 선생님께 문의하세요.</span>
             </div>
-            <button onclick="openModal('settings-modal')" class="underline font-semibold hover:text-amber-900 ml-2">설정하기</button>
         </div>
 
         <!-- Student Form Container -->
@@ -130,7 +123,7 @@
                             오늘의 입장 코드 
                             <i class="fa-solid fa-lock text-slate-400 ml-1 text-xs" title="칠판이나 선생님이 안내해준 코드"></i>
                         </label>
-                        <input type="password" id="entry-code" required placeholder="입장 코드 입력"
+                        <input type="password" id="entry-code" required placeholder="선생님이 안내한 코드 입력"
                             class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm transition-all">
                     </div>
                 </div>
@@ -235,7 +228,7 @@
             </div>
             <div>
                 <span class="text-xs font-semibold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">출석 완료</span>
-                <h2 class="text-2xl font-bold text-slate-800 mt-2">오늘의 마음 출석 완료!</h2>
+                <h2 class="text-2xl font-bold text-slate-800 mt-2">오늘의 마음 출석이 저장되었습니다.</h2>
                 <p class="text-sm text-slate-500 mt-1" id="completed-timestamp"></p>
             </div>
 
@@ -285,161 +278,7 @@
         <p>🌸 마음챙김 출석부 · 내 마음을 가꾸는 아침 시간</p>
         <p class="text-[10px] text-slate-300">GitHub Pages & Google Apps Script 연동 호환</p>
     </footer>
-
-    <!-- Admin Settings Modal -->
-    <div id="settings-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 space-y-5 max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-emerald-600"></i> 선생님 관리자 설정
-                </h3>
-                <button onclick="closeModal('settings-modal')" class="text-slate-400 hover:text-slate-600 text-lg p-1">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <!-- Passcode Config -->
-            <div class="space-y-2">
-                <label class="block text-xs font-bold text-slate-700">오늘의 입장 코드 설정</label>
-                <div class="flex gap-2">
-                    <input type="text" id="config-passcode" placeholder="예: 1024"
-                        class="flex-grow px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                    <button onclick="savePasscode()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all">
-                        저장
-                    </button>
-                </div>
-                <p class="text-[11px] text-slate-400">학생들이 출석할 때 입력해야 하는 암호입니다. 기본값: <span class="font-mono bg-slate-100 px-1 rounded">1024</span></p>
-            </div>
-
-            <hr class="border-slate-100">
-
-            <!-- GAS Webhook URL Config -->
-            <div class="space-y-2">
-                <label class="block text-xs font-bold text-slate-700">구글 앱스스크립트(GAS) Webhook URL</label>
-                <input type="text" id="config-webhook" placeholder="https://script.google.com/macros/s/.../exec"
-                    class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none font-mono">
-                <div class="flex justify-between items-center pt-1">
-                    <p class="text-[11px] text-slate-400">구글 시트 연동 배포 웹앱 URL을 입력해주세요.</p>
-                    <button onclick="saveWebhookUrl()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all">
-                        URL 저장
-                    </button>
-                </div>
-            </div>
-
-            <hr class="border-slate-100">
-
-            <!-- Local Submissions History & CSV Export -->
-            <div class="space-y-3">
-                <div class="flex justify-between items-center">
-                    <label class="block text-xs font-bold text-slate-700">로컬 저장 데이터 (<span id="local-count">0</span>건)</label>
-                    <div class="flex gap-2">
-                        <button onclick="exportCSV()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1">
-                            <i class="fa-solid fa-file-csv text-emerald-600"></i> CSV 다운로드
-                        </button>
-                        <button onclick="clearLocalStorage()" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-bold transition-all">
-                            초기화
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pt-3">
-                <button onclick="closeModal('settings-modal')" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl">
-                    닫기
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Setup Instructions & Apps Script Code Modal -->
-    <div id="guide-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-100 space-y-5 max-h-[85vh] overflow-y-auto">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-book-open text-emerald-600"></i> 구글 시트 연동 & GitHub 올리기 안내
-                </h3>
-                <button onclick="closeModal('guide-modal')" class="text-slate-400 hover:text-slate-600 text-lg p-1">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <!-- Step 1: Apps Script Code Setup -->
-            <div class="space-y-3">
-                <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                    <span class="w-5 h-5 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-xs">1</span>
-                    구글 스프레드시트 앱스 스크립트(GAS) 설정
-                </h4>
-                <ol class="list-decimal list-inside text-xs text-slate-600 space-y-1.5 pl-1 leading-relaxed">
-                    <li>새 <a href="https://sheets.google.com" target="_blank" class="text-emerald-600 underline font-semibold">구글 스프레드시트</a>를 하나 만듭니다.</li>
-                    <li>상단 메뉴에서 <b>[확장 프로그램] ➔ [Apps Script]</b>를 클릭합니다.</li>
-                    <li>기존 코드를 모두 지우고 아래 스크립트 코드를 붙여넣습니다.</li>
-                </ol>
-
-                <div class="relative bg-slate-900 text-slate-200 p-3.5 rounded-2xl text-xs font-mono overflow-x-auto">
-                    <button onclick="copyGasCode()" class="absolute top-3 right-3 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[11px] font-sans font-bold transition-all">
-                        <i class="fa-regular fa-copy"></i> 코드 복사
-                    </button>
-                    <pre id="gas-code-block" class="pt-4">
-function doPost(e) {
-  try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var data = JSON.parse(e.postData.contents);
     
-    // 헤더가 없으면 자동 작성
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow(["제출일시", "학번/이름", "기분온도", "신체상태", "감정단어", "오늘의다짐"]);
-      sheet.getRange(1, 1, 1, 6).setFontWeight("bold").setBackground("#dcfce7");
-    }
-    
-    sheet.appendRow([
-      data.timestamp,
-      data.studentInfo,
-      data.moodTemp + "°C",
-      data.bodyTemp,
-      data.emotions.join(", "),
-      data.resolution
-    ]);
-    
-    return ContentService.createTextOutput(JSON.stringify({ result: "success" }))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({ result: "error", error: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}</pre>
-                </div>
-
-                <ol start="4" class="list-decimal list-inside text-xs text-slate-600 space-y-1.5 pl-1 leading-relaxed">
-                    <li>오른쪽 상단 <b>[배포] ➔ [새 배포]</b>를 누릅니다.</li>
-                    <li>톱니바퀴 ⚙️ 아이콘 클릭 ➔ <b>[웹 앱]</b> 선택</li>
-                    <li><b>액세스 권한이 있는 사용자</b>를 <span class="text-rose-600 font-bold bg-rose-50 px-1 rounded">모든 사용자 (Anyone)</span> 로 설정 후 [배포] 클릭!</li>
-                    <li>생성된 <b>웹 앱 URL</b>을 복사하여 상단 ⚙️ 설정 아이콘 눌러 연동 URL란에 붙여넣으면 완료!</li>
-                </ol>
-            </div>
-
-            <hr class="border-slate-100">
-
-            <!-- Step 2: GitHub Pages Upload Step -->
-            <div class="space-y-2">
-                <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                    <span class="w-5 h-5 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-xs">2</span>
-                    GitHub에 올려서 QR코드로 출석부 배포하기
-                </h4>
-                <ul class="list-disc list-inside text-xs text-slate-600 space-y-1.5 pl-1 leading-relaxed">
-                    <li>GitHub 저장소(Repository)를 새로 만들고 이 파일 이름은 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono text-emerald-700">index.html</code> 로 업로드합니다.</li>
-                    <li>저장소의 <b>Settings ➔ Pages</b> 메뉴에서 Source를 <b>main branch</b> 로 설정하면 웹사이트 주소가 생성됩니다.</li>
-                    <li>생성된 웹사이트 주소를 네이버/구글 QR코드 생성기에 넣어서 교실 칠판이나 책상에 붙여두면 완성됩니다! 📱✨</li>
-                </ul>
-            </div>
-
-            <div class="pt-2">
-                <button onclick="closeModal('guide-modal')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all">
-                    확인했습니다
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script>
         // Default Emotion Palette Options
         const EMOTION_LIST = [
@@ -479,16 +318,18 @@ function doPost(e) {
         // State variables
         let selectedEmotions = [];
         let configPasscode = localStorage.getItem('mindful_passcode') || '1024';
-        let webhookUrl = localStorage.getItem('mindful_webhook_url') || '';
+        // 모든 접속자가 함께 사용하는 구글 Apps Script 배포 주소
+// 실제 주소를 받으면 아래 빈 문자열 안에 넣으세요.
+// 주소 형식: https://script.google.com/macros/s/배포_ID/exec
+const webhookUrl = 'https://script.google.com/macros/s/AKfycbxpcJqFdRTHKB26p39xrmg1WMEKS92xeCr4TUwJiVEoc0dN1l-GfOedWzBIycIihsYYgQ/exec';
 
         // Initialize App on DOM Load
         window.addEventListener('DOMContentLoaded', () => {
-            initDateDisplay();
-            renderEmotionChips();
-            updateWebhookBannerStatus();
-            loadConfigFields();
-            updateLocalCount();
-        });
+    initDateDisplay();
+    renderEmotionChips();
+    updateWebhookBannerStatus();
+    updateLocalCount();
+});
 
         // Set Current Date Display
         function initDateDisplay() {
@@ -587,60 +428,153 @@ function doPost(e) {
             document.getElementById('daily-resolution').value = RANDOM_PROMPTS[randomIndex];
         }
 
-        async function handleFormSubmit(e) {
-            e.preventDefault();
+        async function requestAppsScript(data) {
+    const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+    });
 
-            // Check entry passcode
-            const enteredCode = document.getElementById('entry-code').value.trim();
-            if (enteredCode !== configPasscode) {
-                showToast('❌ 오늘의 입장 코드가 올바르지 않습니다. (선생님께 확인해주세요)');
-                return;
-            }
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
 
-            if (selectedEmotions.length === 0) {
-                showToast('⚠️ 오늘의 감정 단어를 최소 1개 선택해주세요.');
-                return;
-            }
+    const result = await response.json();
 
-            const submitBtn = document.getElementById('submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>제출 처리 중...</span>`;
+    if (!result || typeof result.ok !== 'boolean') {
+        throw new Error('서버 응답 형식이 올바르지 않습니다.');
+    }
 
-            const payload = {
-                timestamp: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
-                studentInfo: document.getElementById('student-info').value.trim(),
-                entryCode: enteredCode,
-                moodTemp: document.getElementById('mood-temp-range').value,
-                bodyTemp: document.getElementById('selected-body-status').value,
-                emotions: selectedEmotions,
-                resolution: document.getElementById('daily-resolution').value.trim()
-            };
+    return result;
+}
 
-            // Save payload to local storage history as backup
-            saveToLocalStorage(payload);
+async function handleFormSubmit(e) {
+    e.preventDefault();
 
-            // Transmit to Google Apps Script Webhook if configured
-            if (webhookUrl) {
-                try {
-                    // Send JSON payload via POST (Using no-cors for GAS Web App compatibility)
-                    await fetch(webhookUrl, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                } catch (err) {
-                    console.warn('GAS fetch warning (data saved locally):', err);
-                }
-            }
+    const submitBtn = document.getElementById('submit-btn');
 
-            // Show Success UI Card
-            setTimeout(() => {
-                displaySuccessReceipt(payload);
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>마음챙김 출석 제출하기</span>`;
-            }, 600);
+    // 처리 중 중복 제출 방지
+    if (submitBtn.disabled) {
+        return;
+    }
+
+    if (!webhookUrl || !webhookUrl.endsWith('/exec')) {
+        showToast('출석 제출을 사용할 수 없습니다. 선생님께 문의하세요.');
+        return;
+    }
+
+    const enteredCode = document
+        .getElementById('entry-code')
+        .value
+        .trim();
+
+    if (!enteredCode) {
+        showToast('선생님이 안내한 입장 코드를 입력해 주세요.');
+        return;
+    }
+
+    if (selectedEmotions.length === 0) {
+        showToast('오늘의 감정 단어를 최소 1개 선택해주세요.');
+        return;
+    }
+
+    const originalButtonHtml = submitBtn.innerHTML;
+    let phase = 'validation';
+
+    submitBtn.disabled = true;
+
+    try {
+        // 1. 입장 코드만 먼저 확인
+        submitBtn.innerHTML = `
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <span>입장 코드를 확인하고 있습니다…</span>
+        `;
+
+        const validation = await requestAppsScript({
+            action: 'validateEntryCode',
+            entryCode: enteredCode
+        });
+
+        if (!validation.ok) {
+            showToast(
+                validation.message ||
+                '입장 코드를 확인해 주세요.'
+            );
+            return;
         }
+
+        // 2. 코드가 맞을 때만 출석 내용 구성 및 전송
+        const payload = {
+            timestamp: new Date().toLocaleString('ko-KR', {
+                timeZone: 'Asia/Seoul'
+            }),
+            studentInfo: document
+                .getElementById('student-info')
+                .value
+                .trim(),
+            moodTemp: document
+                .getElementById('mood-temp-range')
+                .value,
+            bodyTemp: document
+                .getElementById('selected-body-status')
+                .value,
+            emotions: [...selectedEmotions],
+            resolution: document
+                .getElementById('daily-resolution')
+                .value
+                .trim()
+        };
+
+        phase = 'submission';
+
+        submitBtn.innerHTML = `
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <span>출석 내용을 저장하고 있습니다…</span>
+        `;
+
+        const result = await requestAppsScript({
+            action: 'submitAttendance',
+            entryCode: enteredCode,
+            ...payload
+        });
+
+        if (!result.ok) {
+            showToast(
+                result.message ||
+                '출석 내용을 저장하지 못했습니다.'
+            );
+            return;
+        }
+
+        // 서버 저장 성공 후 로컬 백업
+        // 로컬 백업 실패가 서버 저장 실패로 표시되지 않도록 분리
+        try {
+            saveToLocalStorage(payload);
+        } catch (backupError) {
+            console.warn('로컬 백업 실패:', backupError);
+        }
+
+        // 서버에서 저장 성공을 확인한 경우에만 완료 화면 표시
+        displaySuccessReceipt(payload);
+    } catch (error) {
+        console.error('출석 처리 오류:', error);
+
+        if (phase === 'validation') {
+            showToast(
+                '입장 코드를 확인하지 못했습니다. 네트워크 연결을 확인해 주세요.'
+            );
+        } else {
+            showToast(
+                '저장 결과를 확인하지 못했습니다. 재제출 전에 선생님께 저장 여부를 확인해 주세요.'
+            );
+        }
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalButtonHtml;
+    }
+}
 
         // Display Success Summary
         function displaySuccessReceipt(data) {
@@ -685,9 +619,9 @@ function doPost(e) {
         }
 
         function updateLocalCount() {
-            const logs = JSON.parse(localStorage.getItem('mindful_logs') || '[]');
-            document.getElementById('local-count').innerText = logs.length;
-        }
+    const logs = JSON.parse(localStorage.getItem('mindful_logs') || '[]');
+    return logs.length;
+}
 
         function clearLocalStorage() {
             if (confirm('로컬에 저장된 모든 출석 기록을 삭제하시겠습니까?')) {
@@ -737,13 +671,10 @@ function doPost(e) {
             showToast('오늘의 입장 코드가 저장되었습니다.');
         }
 
-        function saveWebhookUrl() {
-            const val = document.getElementById('config-webhook').value.trim();
-            webhookUrl = val;
-            localStorage.setItem('mindful_webhook_url', val);
-            updateWebhookBannerStatus();
-            showToast('웹앱 URL 설정이 저장되었습니다.');
-        }
+function saveWebhookUrl() {
+    document.getElementById('config-webhook').value = webhookUrl;
+    showToast('연동 주소는 사이트 코드에서 공통으로 관리합니다.');
+}
 
         function updateWebhookBannerStatus() {
             const banner = document.getElementById('webhook-status-banner');
